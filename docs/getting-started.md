@@ -32,6 +32,6 @@ jobs:
           prefix: docs/
 ```
 
-Run the workflow once by hand with `full_import` ticked to create pages for everything that already exists. From then on every merge to `main` sends only the files the commit changed.
+Run the workflow once by hand with `full_import` ticked to create pages for everything that already exists. This is a one-time step per repository. From then on every merge to `main` sends only the files the commit changed.
 
 > **Note.** The first import of a large folder takes a minute or two. Later pushes finish in seconds because only changed files travel.
