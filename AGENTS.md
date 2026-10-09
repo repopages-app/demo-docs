@@ -7,6 +7,7 @@ Pages are Markdown files. Diagrams are Mermaid fences.
 - src/sync/        → docs/how-it-works.md (sequence diagram and the "What a push contains" table)
 - src/settings/    → docs/getting-started.md
 - src/render/      → docs/guides/diagrams.md
+- prompts/         → docs/prompts/
 
 ## Rule for every change
 Before finishing a change under src/, open the pages listed for that area and check

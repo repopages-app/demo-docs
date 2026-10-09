@@ -1,0 +1,36 @@
+# Turns edits made in Confluence (write-back test space WBDEMO, DEVELOPMENT build of RepoPages) into
+# pull requests. RepoPages marks an edited page "pending review" and keeps the proposed Markdown on
+# the page; this job reads it, opens one pull request per edit and reports the link back.
+#
+# Repository secrets:
+#   REPOPAGES_DEV_URL, REPOPAGES_DEV_SECRET   as for repopages-dev.yml
+#   CONFLUENCE_EMAIL                          the Atlassian account of the token
+#   CONFLUENCE_TOKEN                          an API token of that account: classic, or scoped with
+#                                             read:page:confluence, read:attachment:confluence, search:confluence
+# Repository setting: Settings > Actions > General > Workflow permissions >
+#   "Allow GitHub Actions to create and approve pull requests".
+name: RepoPages edits
+on:
+  schedule:
+    - cron: '0 * * * *'     # hourly
+  workflow_dispatch:        # Actions > RepoPages edits > Run workflow, for "now"
+concurrency: repopages-pull-edits   # a manual run and the schedule never race on the same branch
+permissions:
+  contents: write           # push the repopages/edit-* branches
+  pull-requests: write      # open the pull requests
+jobs:
+  pull-edits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # the edit's base commit is needed to merge onto newer changes
+      - uses: repopages-app/ci@v2-beta
+        with:
+          mode: pull-edits
+          url: ${{ secrets.REPOPAGES_DEV_URL }}
+          secret: ${{ secrets.REPOPAGES_DEV_SECRET }}
+          confluence-site: https://zrcic.atlassian.net
+          confluence-email: ${{ secrets.CONFLUENCE_EMAIL }}
+          confluence-token: ${{ secrets.CONFLUENCE_TOKEN }}
+          confluence-space: WBDEMO

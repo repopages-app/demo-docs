@@ -1,0 +1,33 @@
+# Publishes docs/ to the write-back test space (WBDEMO) through the DEVELOPMENT build of RepoPages
+# on every push to main, with the v2-beta client. The production workflow is repopages.yml.
+# Repository secrets: REPOPAGES_DEV_URL (sync URL of the development app),
+# REPOPAGES_DEV_SECRET (the secret of the development mapping).
+name: RepoPages (development)
+on:
+  push:
+    branches: [main]
+    paths: ['**/*.md', '**/*.markdown']
+  workflow_dispatch:
+    inputs:
+      full_import:
+        description: 'Send every Markdown file (unchanged pages are skipped)'
+        type: boolean
+        default: false
+      force:
+        description: 'Rewrite every page even if unchanged (implies a full import)'
+        type: boolean
+        default: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # push mode diffs HEAD~1..HEAD
+      - uses: repopages-app/ci@v2-beta
+        with:
+          url: ${{ secrets.REPOPAGES_DEV_URL }}
+          secret: ${{ secrets.REPOPAGES_DEV_SECRET }}
+          prefix: docs/
+          mode: ${{ (inputs.full_import || inputs.force) && 'import' || 'push' }}
+          force: ${{ inputs.force || false }}
