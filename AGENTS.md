@@ -1,8 +1,7 @@
 # Agent instructions
 
 ## Documentation lives in docs/ and is published to Confluence from main
-Pages are Markdown files. Diagrams are Mermaid fences. Do not edit Confluence directly:
-the RepoPages workflow rewrites a page from its file on the next push.
+Pages are Markdown files. Diagrams are Mermaid fences.
 
 ## Code areas and the pages that describe them
 - src/sync/        → docs/how-it-works.md (sequence diagram and the "What a push contains" table)
